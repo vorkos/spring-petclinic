@@ -8,11 +8,27 @@ pipeline {
       timeout(time: 10, unit: 'MINUTES')
     }
     stages{
-        stage('Stage 1'){
-            echo 'Stage 1'
+        stage('debug') {
+            steps {
+                echo 'Debug info'
+                sh(returnStdout: true, script: """
+                ls -la ${pwd()}
+                """)
+            }
         }
-        stage('Stage 2'){
-            echo 'Stage 2'
+        stage('Run via maven') {
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                        sh 'mvn clean package sonar:sonar'
+                  	}
+            }
+        }
+        stage("SonarQube quality gate") {
+            steps {
+                timeout(time: 10, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
         }
     }
 }
