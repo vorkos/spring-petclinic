@@ -5,7 +5,7 @@ pipeline {
     agent any
     options {
       buildDiscarder(logRotator(numToKeepStr: '7'))
-      timeout(time: 10, unit: 'MINUTES')
+      timeout(time: 20, unit: 'MINUTES')
     }
     stages{
         stage('debug') {
@@ -25,7 +25,7 @@ pipeline {
         }
         stage("SonarQube quality gate") {
             steps {
-                timeout(time: 10, unit: 'MINUTES') {
+                timeout(time: 20, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
                 }
             }
