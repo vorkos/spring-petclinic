@@ -1,5 +1,7 @@
 #!groovy
 import jenkins.model.*
+@Library('test')_
+
 
 pipeline {
     agent any
@@ -10,7 +12,7 @@ pipeline {
     stages{
         stage('debug') {
             steps {
-                echo 'Debug info'
+                test 'test'
                 sh(returnStdout: true, script: """
                 ls -la ${pwd()}
                 """)
@@ -18,9 +20,7 @@ pipeline {
         }
         stage('Run via maven') {
             steps {
-                withSonarQubeEnv('sonarqube') {
-                        sh 'mvn clean package sonar:sonar'
-                  	}
+                sonarScan()
             }
         }
         stage("SonarQube quality gate") {
