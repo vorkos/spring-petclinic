@@ -22,7 +22,11 @@ pipeline {
         }
         stage("SonarQube quality gate") {
             steps {
-                script {sonarGate()}
+                script {
+                    sonarCLI{
+                        serviceName = "localhost"
+                    }
+                }
             }
         }
     }
