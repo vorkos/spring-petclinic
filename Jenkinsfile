@@ -12,22 +12,17 @@ pipeline {
     stages{
         stage('debug') {
             steps {
-                test 'test'
-                sh(returnStdout: true, script: """
-                ls -la ${pwd()}
-                """)
+                script { test 'test'}
             }
         }
         stage('Run via maven') {
             steps {
-                sonarScan()
+                script {sonarScan()}
             }
         }
         stage("SonarQube quality gate") {
             steps {
-                timeout(time: 20, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
+                script {sonarGate()}
             }
         }
     }
